@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MVC_Project.DbContext;
 using MVC_Project.Models;
+using MVC_Project.Services;
 
 namespace MVC_Project
 {
@@ -40,6 +42,13 @@ namespace MVC_Project
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // Add Razor Pages for Identity
+            builder.Services.AddRazorPages();
+
+            // Register the EmailSender Service
+            builder.Services.AddTransient<IEmailSender, ConsoleEmailSender>();
+
+
 
             var app = builder.Build();
 
@@ -56,6 +65,9 @@ namespace MVC_Project
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            // Add Razor Pages for Identity
+            app.MapRazorPages();
 
             app.MapControllerRoute(
                 name: "default",
