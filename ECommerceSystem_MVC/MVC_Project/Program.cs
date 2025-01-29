@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MVC_Project.DbContext;
 using MVC_Project.Models;
+using MVC_Project.Seeders;
 using MVC_Project.Services;
 
 namespace MVC_Project
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ namespace MVC_Project
                 // options.Lockout.MaxFailedAccessAttempts = 5;
                 // options.Lockout.AllowedForNewUsers = true;
                 options.User.RequireUniqueEmail = true;
+                // options.SignIn.RequireConfirmedEmail = false;
             });
 
 
@@ -65,6 +67,14 @@ namespace MVC_Project
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            // Seed Roles
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var roleSeeder = new RoleSeeder(roleManager);
+                await roleSeeder.SeedRolesAsync();
+            }
 
             // Add Razor Pages for Identity
             app.MapRazorPages();

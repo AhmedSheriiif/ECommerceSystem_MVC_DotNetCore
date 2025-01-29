@@ -1,0 +1,21 @@
+﻿@model MVC_Project.ViewModel.AssignRoleViewModel
+
+<h2>Assign Roles to @Model.UserName</h2>
+
+<form asp-action="AssignRole" method="post">
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="UserName" />
+
+    <div class="form-group">
+        <label>Select Roles</label>
+        @foreach (var role in Model.Roles)
+        {
+            <div class="form-check">
+                <input type="checkbox" name="SelectedRoles" value="@role.Value" @(role.Selected ? "checked" : "") />
+                <label class="form-check-label">@role.Text</label>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
